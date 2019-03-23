@@ -1,4 +1,3 @@
-# Seq-Align
-A variety of sequence alignment methods.
+# Codon Bias Analysis Fitting Algorithm
 
-This repository contains Python scripts for local and global pairwise aligments, multiple alignments, and UPGMA.
+This repository contains Python scripts for fitting the biophysical and population genetics model to genomic data.
