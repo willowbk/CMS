@@ -5,7 +5,7 @@ from Bio import pairwise2
 from io import StringIO
 from Bio import AlignIO
 from Bio.Seq import Seq
-
+# Comment
 print('Importing gene sequences ... ')
 import codon_genes_e_coli as gen_abun
 print('Done.')
