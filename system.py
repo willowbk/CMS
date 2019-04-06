@@ -111,61 +111,38 @@ def Set_Params(model_params):
 	n_params = model_params
 	
 	if model_params == 3:
-
-		kappa1_i = 0
-		kappa2_i = 1
-		sbeta_i = 2
-		T0beta_i = 3
 		r_i = [4, 5]
-		mutables = [i for i in range(3)]
-
+		
 	elif model_params == 5:
 
-		kappa1_i = 0
-		kappa2_i = 1
-		sbeta_i = 2
-		T0beta_i = 3
 		r_i = [4, 5]
-		mutables = [i for i in range(5)]
-	
+		
 	elif model_params == 7:
 
-		kappa1_i = 0
-		kappa2_i = 1
-		sbeta_i = 2
-		T0beta_i = 3
 		r_i = [4, 7]
-		mutables = [i for i in range(7)]
-
+		
 	elif model_params == 12:
 
-		kappa1_i = 0
-		kappa2_i = 1
-		sbeta_i = 2
-		T0beta_i = 3
 		r_i = [4, 12]
-		mutables = [i for i in range(12)]
-
+		
 	elif model_params == 16:
 
-		kappa1_i = 0
-		kappa2_i = 1
-		sbeta_i = 2
-		T0beta_i = 3
 		r_i = [4, 16]
-		mutables = [i for i in range(16)]
-
+		
 	elif model_params == 19:
 
-		kappa1_i = 0
-		kappa2_i = 1
-		sbeta_i = 2
-		r_i = [3, 19]
-		mutables = [i for i in range(19)]
+		r_i = [3, model_params]
+	kappa1_i = 0
+	kappa2_i = 1
+	sbeta_i = 2
 	
+	if not model_params == 19:
+		T0beta_i = 3
+		
+	mutables = [i for i in range(model_params)]
 	init_ranges = [100 for i in range(r_i[-1])]
-	max_vals = [10**6] + [10**2 for i in range(3, r_i[-1])]
-	min_vals = [0.1, 0.1] + [0.0] + [0.0] + [0.0 for i in range(4, r_i[-1])]
+	max_vals = [10**2 for i in range(r_i[-1])]
+	min_vals = [0.1, 0.1] + [0.0 for i in range(2, r_i[-1])]
 
 def is_Transition(codon_1, codon_2):
 	
@@ -551,6 +528,9 @@ def Get_All_Neighbors(seq):
 	
 	ns = list(ns)
 	ns.sort()
+	print(len(seq))
+	print(len(min_vals))
+	print(len(max_vals))
 	neighbors = [[[str(min([max([float(seq[i]) + dx*int(move), min_vals[i]]), max_vals[i]])) for i,move in enumerate(n.split('_'))],1] for n in ns]
 	
 	return neighbors
