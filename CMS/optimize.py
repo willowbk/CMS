@@ -239,8 +239,6 @@ def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depths=None, 
 		for depth in depths:
 			nns = nns + Get_All_Neighbors(x, dx, depth, min_x, max_x)
 		
-		print(nns)
-		input(' ... ')
 		min_F = F
 		nns_count = 0
 		i = start_i
