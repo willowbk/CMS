@@ -16,5 +16,5 @@ for init_x in init_xs:
 
 	x,func_val = opt.CMS(func1, init_x)
 
-	print(init_x, x, func_vale)
+	print(init_x, x, func_val)
 	
