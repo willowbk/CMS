@@ -43,11 +43,22 @@ def Get_All_Neighbors(x, dx, depth, min_x, max_x):
 	Parameters
 	----------
 		x : list
-		      An array of floats representing the current location
-		      in parameter space.
+			An array of floats representing the current location
+			in parameter space.
 		
 		dx : float
-		      
+			The step size for each move.
+
+		depth : integer
+			How many single moves to apply for updates to 'x.'
+		
+		min_x : list
+			Lower bound on values of 'x.'
+		
+		max_x : list
+			Upper bound on values of 'x.'
+		
+		        
 	Returns
 	-------
 		neighbors : list of lists
@@ -81,7 +92,7 @@ def Get_All_Neighbors(x, dx, depth, min_x, max_x):
 
 
 
-def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depth=2, init_dx=None, eps=1e-8):
+def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depths=[1,2], init_dx=None, eps=1e-8):
 	
 	if max_x == None:
 		max_x = [1e16 for i in range(len(init_x))]
@@ -108,8 +119,12 @@ def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depth=2, init
 	print('START: ' + str(best_F) + ' ... ' + str(x))
 
 	while t < tmax:
-	
-		nns = Get_All_Neighbors(x, dx, depth, min_x, max_x)
+		
+		
+		nns = []
+		for depth in depths:
+			nns = nns + Get_All_Neighbors(x, dx, depth, min_x, max_x)
+			
 		min_F = F
 		nns_count = 0
 		i = start_i
