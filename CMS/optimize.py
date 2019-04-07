@@ -5,6 +5,16 @@ def Single_Moves(moves):
 	possible unique moves in which a single
 	parameter is changed in either the 
 	positive or negative direction.
+	
+	Parameters
+	----------
+		moves : list
+		        1-D array of moves represented as characters taking only integer values.
+	Returns
+	-------
+		nns : set
+		        A set of all single-move changes to the list move.
+	
 	"""
 	nns = set([])
 
@@ -17,6 +27,17 @@ def Single_Moves(moves):
 
 
 def Get_All_Neighbors(x, dx, depth, min_x, max_x):
+	
+	"""
+	Given that single moves can be generated,
+	this function will then construct a set
+	of all combinations of single moves 
+	up to the value of the parameter 'depth.'
+	
+	Once the full set of moves are found
+	these moves are applied to the current 
+	location 
+	"""
 	
 	ns = Single_Moves(['0' for i in range(len(x))])
 
@@ -121,7 +142,7 @@ def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depth=2, init
 					F = new_F
 					print('\t F = '+str(F), itera)
 				else:
-					itera /= 10
+					itera /= 2
 				
 				Fs.append(F)
 		
