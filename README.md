@@ -1,4 +1,4 @@
-# Complete Moveset Optimization Algorithm
+# Complete Moveset Search Optimization Algorithm
 
 This repository contains Python scripts for the Complete Moveset Search (CMS) optimization algorithm. This algorithm can be used for general optimization of single objective functions.
 This algorithm was developed for fitting a biophysical and population genetic model for the analysis of the codon usage bias described in [this](https://www.biorxiv.org/content/10.1101/578815v1) paper.
