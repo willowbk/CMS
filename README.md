@@ -16,7 +16,9 @@ This will install the optimization algorithm and any dependencies. Once the inst
 
 # Running the Optimizer
 
-Once installed, the algorithm can be 
+Once installed, the algorithm can be run to find the optimum of a standard python function after import:
 
-# 
+`from CMS import optimize`
+
+An example of this can be found in the `Example` folder.
 
