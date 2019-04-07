@@ -1,114 +1,135 @@
-import system as system
-from time import time
-import numpy as np
 
-system.Import_Data('e_coli_ppm0_5-fold')
-system.Set_Data('all')
-system.Set_Params(19)
-
-start_i = 0
-t = 0
-sol_fnd = False
-tmax = 10**6
-m = 25
-eps = .05
-
-seq = system.Generate_Seq()
-F = system.Get_Fitness(seq)
-
-best_seq = list(seq)
-Fs = []
-Ff = 0
-
-path = '_'.join(seq)
-init_seq = list(seq)
-
-best_F = F
-start_F = F
-print('START: ' + str(best_F) + ' ... ' + str(seq))
-F_t = []
-seq_t = []
-
-system.dx = 10
-system.depth = 2
-start_time = time()
-
-while t < tmax:
+def Single_Moves(moves):
 	
-	nn_ws = system.Get_All_Neighbors(seq)
-	max_F = F
-	nn_ws_count = 0
-	i = start_i
-	prev_start_i = start_i
+	nns = set([])
+
+	for i in range(len(moves)):
+		nns.add('_'.join(moves[:i] + [str(int(moves[i]) + 1)] + moves[i+1:]))
+		nns.add('_'.join(moves[:i] + [str(int(moves[i]) - 1)] + moves[i+1:]))
+		
+	return nns
+
+
+
+def Get_All_Neighbors(x, dx, depth, min_x, max_x):
 	
-	while max_F == F and nn_ws_count < len(nn_ws) and (Ff >= 0 or len(Fs) < m):
-		nn_w = nn_ws[i]
-		max_F = max([system.Get_Fitness(nn_w[0]), max_F])
-		nn_ws_count += 1
-		i = i + 1
-		if i >= len(nn_ws):
-			i = 0
-		t += 1
-		
-		if len(Fs) == m:
-			Fs = Fs[1:m + 1]
-		Fs.append(F)
-		
-		Ff = (Fs[-1] - Fs[0])*(tmax - t)/len(Fs) + F 
+	ns = Single_Moves(['0' for i in range(len(x))])
+
+	for d in range(depth - 1):
+
+		curr_ns = set(ns)
 	
-	start_i = i - 1 + int(nn_ws_count == len(nn_ws))
-	max_nn = list(nn_w[0])
+		for n in curr_ns:
 	
-	if max_F <= F:
-		
-		system.dx /= 2
-		if system.dx < 1.e-4:
-			system.dx = 10
-			sol_fnd = False
-		Ff = 0
-		Fs = []
-	else:
-		move = [float(max_nn[i]) - float(seq[i]) for i in range(len(seq))]
-		seq = list(max_nn)
-		F = max_F
-		
-		itera = 10**6
-		
-		while itera >= 1:
-			new_seq = [str(min([max([float(seq[i]) + itera*move[i], system.min_vals[i]]), system.max_vals[i]])) for i in range(len(seq))]
-			new_F = system.Get_Fitness(new_seq)
+			new_ns = Single_Moves(n.split('_'))
+			ns = ns.union(new_ns)
+	curr_ns = set(ns)
+
+	for n in curr_ns:
+		move_sum = sum([abs(int(move)) for move in n.split('_')])
+		if move_sum < depth:
+			ns.remove(n)
+	
+	ns = list(ns)
+	ns.sort()
+	
+	neighbors = [[min([max([float(x[i]) + dx*int(move), min_x[i]]), max_x[i]]) for i,move in enumerate(n.split('_'))] for n in ns]
+	
+	return neighbors
+
+
+
+def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depth=2, init_dx=None, eps=1e-8):
+	
+	if max_x == None:
+		max_x = [1e16 for i in range(len(init_x))]
+	if min_x == None:
+		min_x = [-1e16 for i in range(len(init_x))]
+	if init_dx == None:
+		init_dx = min([min([max_x[i] - init_x[i], init_x[i] - min_x[i]]) for i in range(len(init_x))])
+	
+	dx = init_dx
+	start_i = 0
+	t = 0
+	sol_fnd = False
+
+	x = list(init_x)
+	F = func(x)
+	Ff = 0
+	Fs = []
+
+	best_x = list(x)
+	best_F = F
+	start_F = F
+	print('START: ' + str(best_F) + ' ... ' + str(x))
+
+	while t < tmax:
+	
+		nns = Get_All_Neighbors(x, dx, depth, min_x, max_x)
+		max_F = F
+		nns_count = 0
+		i = start_i
+		prev_start_i = start_i
+	
+		while max_F == F and nns_count < len(nns) and (Ff >= 0 or len(Fs) < tail):
+			nn = nns[i]
+			max_F = max([func(nn), max_F])
+			nns_count += 1
+			i = i + 1
+			if i >= len(nns):
+				i = 0
 			t += 1
-			
-			if new_F > F:
-				seq = list(new_seq)
-				F = new_F
-				print('\t F = '+str(F), itera)
-			else:
-				itera /= 10
-				
+		
+			if len(Fs) == tail:
+				Fs = Fs[1:tail + 1]
 			Fs.append(F)
 		
-		path = '_'.join(seq)
-		sol_fnd = True
+			Ff = (Fs[-1] - Fs[0])*(tmax - t)/len(Fs) + F 
 	
-	if F > best_F:
-		print(t, 'BEST: ' + str(system.Get_Fitness(seq)) + ' ... ' + str(seq))
+		start_i = i - 1 + int(nns_count == len(nns))
+		max_nn = list(nn)
+	
+		if max_F <= F:
 		
-		best_seq = list(seq)
-		best_F = F
+			dx /= 2
+			if dx < eps:
+				dx = init_dx
+				sol_fnd = False
+			Ff = 0
+			Fs = []
+		else:
+			move = [max_nn[i] - x[i] for i in range(len(x))]
+			x = list(max_nn)
+			F = max_F
 		
-		F_t.append([F, t])
-		seq_t.append([float(term) for term in seq] + [t])
+			itera = 10**6
 		
-runtime = time()-start_time
-print("Completion time: " + str(round(runtime, 3)) + " seconds")
-print('dx = '+str(system.dx))
-print('depth = '+str(system.depth))
-print('BEST: ' + str(best_F) + ' ... ' + str(best_seq))
+			while itera >= 1:
+				new_x = [min([max([float(x[i]) + itera*move[i], min_x[i]]), max_x[i]]) for i in range(len(x))]
+				new_F = func(new_x)
+				t += 1
+			
+				if new_F > F:
+					x = list(new_x)
+					F = new_F
+					print('\t F = '+str(F), itera)
+				else:
+					itera /= 10
+				
+				Fs.append(F)
+		
+			sol_fnd = True
+	
+		if F > best_F:
+			print(t, 'BEST: ' + str(func(x)) + ' ... ' + str(x))
+		
+			best_x = list(x)
+			best_F = F
+		
+	return best_x, best_F
 
 
-with open("CodonBias_Results_"+organism+"_"+str(data_set)+".out", "a") as out_file:
-	out_file.write('START: ' + str(start_F) + ' SEQi: ' + str(init_seq) + ' BEST: ' + str(best_F) + ' SEQf: ' + str(best_seq) + ' TIME: '  + str(round(runtime, 3)) + ' seconds fin. dep. = ' + str(system.depth) + '\n')
-	
+
+
 	
 	
