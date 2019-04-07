@@ -13,7 +13,7 @@ def Single_Moves(moves):
 	Returns
 	-------
 		nns : set
-		        A set of all single-move changes to the list move.
+		        A set of all single-move changes to the move list.
 	
 	"""
 	nns = set([])
@@ -34,9 +34,25 @@ def Get_All_Neighbors(x, dx, depth, min_x, max_x):
 	of all combinations of single moves 
 	up to the value of the parameter 'depth.'
 	
-	Once the full set of moves are found
+	Once the full set of moves are found,
 	these moves are applied to the current 
-	location 
+	location 'x' using the step size 'dx'
+	while remaining within the boundaries 
+	specified by 'min_x' and 'max_x.'
+	
+	Parameters
+	----------
+		x : list
+		      An array of floats representing the current location
+		      in parameter space.
+		
+		dx : float
+		      
+	Returns
+	-------
+		neighbors : list of lists
+		        A set of all single-move changes to the move list.
+	
 	"""
 	
 	ns = Single_Moves(['0' for i in range(len(x))])
