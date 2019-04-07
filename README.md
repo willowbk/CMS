@@ -20,5 +20,5 @@ Once installed, the algorithm can be run to find the optimum of a standard pytho
 
 `from CMS import optimize`
 
-An example of this can be found in the `Example` folder.
+An example of this can be found in the `Examples` folder.
 
