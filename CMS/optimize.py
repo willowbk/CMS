@@ -93,7 +93,7 @@ def Get_All_Neighbors(x, dx, depth, min_x, max_x):
 
 
 
-def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depths=[1,2], init_dx=None, eps=1e-8):
+def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depths=None, init_dx=None, eps=1e-8):
 	
 	"""
 	    This algorithm minimizes the function 'func' on 
@@ -208,6 +208,12 @@ def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depths=[1,2],
 		# this value will default to the distance to
 		# the nearest boundary.
 		init_dx = min([min([max_x[i] - init_x[i], init_x[i] - min_x[i]]) for i in range(len(init_x))])
+	
+	if depths == None:
+		if len(x) == 1:
+			depths = [1]
+		else:
+			depths = [1,2]
 	
 	dx = init_dx
 	start_i = 0
