@@ -275,8 +275,9 @@ def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depths=None, 
 			x = list(min_nn)
 			F = min_F
 		
-			itera = int(min([min([max_x[i] - x[i], x[i] - min_x[i]]) for i in range(len(init_x))])/(max(depths)*dx))
-			itera = min([10**6, itera])
+			#itera = int(min([min([max_x[i] - x[i], x[i] - min_x[i]]) for i in range(len(init_x))])/(max(depths)*dx))
+			
+			itera = 10**6
 			
 			while itera >= 1:
 				new_x = [min([max([x[i] + itera*move[i], min_x[i]]), max_x[i]]) for i in range(len(x))]
