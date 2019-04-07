@@ -210,7 +210,11 @@ def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depths=None, 
 		init_dx = min([min([max_x[i] - init_x[i], init_x[i] - min_x[i]]) for i in range(len(init_x))])
 	
 	if depths == None:
-		if len(x) == 1:
+		# 'depths' defaults to 1 and 2 changes
+		# unless there is only one value in 'x'
+		# to be updated.
+	
+		if len(init_x) == 1:
 			depths = [1]
 		else:
 			depths = [1,2]
@@ -273,7 +277,7 @@ def CMS(func, init_x, max_x=None, min_x=None, tail=25, tmax=10**3, depths=None, 
 			x = list(min_nn)
 			F = min_F
 		
-			itera = 10**6
+			itera = int(min([min([max_x[i] - x[i], x[i] - min_x[i]]) for i in range(len(init_x))])/(max(depths)*dx))
 		
 			while itera >= 1:
 				new_x = [min([max([x[i] + itera*move[i], min_x[i]]), max_x[i]]) for i in range(len(x))]
